@@ -21,6 +21,24 @@ local VoraLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/juans
 if isMobile then UI.Mobile = true end
 print("[Universal] Platform:", isMobile and "MOBILE" or "PC")
 
+local Window = VoraLib:CreateWindow({
+    Name = "Vora Hub",
+    Intro = true
+})
+
+local Tabs = {
+    Home = Window:CreateTab({ Name = "Discord", Icon = "rbxassetid://94434236999817"}),
+    Main = Window:CreateTab({ Name = "Main", Icon = "rbxassetid://98755624629571"}),
+    Visual = Window:CreateTab({ Name = "Visual", Icon = "rbxassetid://100033680381365"}),
+    Player = Window:CreateTab({ Name = "Players", Icon = "rbxassetid://108483430622128"}),
+    Survivor = Window:CreateTab({ Name = "Survivors", Icon = "rbxassetid://110987169760162"}),
+    Killer = Window:CreateTab({ Name = "Killers", Icon = "rbxassetid://82472368671405"}),
+    Aim = Window:CreateTab({ Name = "Aim", Icon = "rbxassetid://134242818164054"}),
+    Mapping = Window:CreateTab({ Name = "Map", Icon = "rbxassetid://95107167260947"}),
+    Misc = Window:CreateTab({ Name = "Miscellaneous", Icon = "rbxassetid://70386228443175"}),
+    Settings = Window:CreateTab({ Name = "Settings", Icon = "rbxassetid://80758916183665"})
+}
+
 if not isMobile then
     local _cursorOn = false
     local _cursorManual = false
@@ -1718,18 +1736,11 @@ do
         if not VisualTabRef or Vora_ControlsAdded then return end
         Vora_ControlsAdded = true
 
-        local settingsSection = VisualTabRef:AddSection({
-            Position = "Center",
-            Name = "Highlight ESP Settings",
-            Icon = "solar:settings-bold",
-            Box = true,
-            BoxBorder = true,
-            Opened = false,
-        })
+        local settingsSection = Tabs.Visual:CreateSection({ Name = "Settings Visual" })
 
         settingsSection:AddSlider({
             Name = "ESP Fill Transparency",
-            Flag = "Vora ESP Fill Transparency",
+            SubText = "Vora ESP Fill Transparency",
             Min = 0,
             Max = 1,
             Default = Vora_ESPState.ESPFillTransparency,
@@ -1742,7 +1753,7 @@ do
 
         settingsSection:AddSlider({
             Name = "ESP Outline Transparency",
-            Flag = "Vora ESP Outline Transparency",
+            SubText = "Vora ESP Outline Transparency",
             Min = 0,
             Max = 1,
             Default = Vora_ESPState.ESPOutlineTransparency,
@@ -1755,7 +1766,7 @@ do
 
         settingsSection:AddSlider({
             Name = "ESP Text Size",
-            Flag = "Vora ESP Text Size",
+            SubText = "Vora ESP Text Size",
             Min = 8,
             Max = 22,
             Default = Vora_ESPState.ESPTextSize,
@@ -1766,18 +1777,10 @@ do
             end,
         })
 
-        local playerSection = VisualTabRef:AddSection({
-            Position = "Center",
-            Name = "Player Highlight ESP",
-            Icon = "solar:users-group-rounded-bold",
-            Box = true,
-            BoxBorder = true,
-            Opened = false,
-        })
+        local playerSection = Tabs.Visual:CreateSection({ Name = "Players Highlight ESP" })
 
         playerSection:AddToggle({
             Name = "Enable Player ESP",
-            Flag = "Vora Enable Player ESP",
             Default = false,
             Callback = function(state)
                 Vora_ESPState.PlayerMasterESP = state
@@ -1792,7 +1795,6 @@ do
 
         playerSection:AddDropdown({
             Name = "Select Player ESP",
-            Flag = "Vora Select Player ESP",
             Values = { "Survivor ESP", "Killer ESP", "Spectator ESP", "Survivor Items ESP" },
             Multi = true,
             AllowNone = true,
@@ -1814,7 +1816,6 @@ do
 
         playerSection:AddToggle({
             Name = "Player Nametags",
-            Flag = "Vora Player Nametags",
             Default = false,
             Callback = function(state)
                 Vora_ESPState.Nametags = state
@@ -1829,7 +1830,6 @@ do
 
         playerSection:AddToggle({
             Name = "Player Distance ESP",
-            Flag = "Vora Player Distance ESP",
             Default = false,
             Callback = function(state)
                 Vora_ESPState.DistanceESP = state
@@ -1844,7 +1844,6 @@ do
 
         playerSection:AddToggle({
             Name = "Survivor Killer Warning (!)",
-            Flag = "Survivor Killer Warning",
             Default = false,
             Callback = function(state)
                 VD.SURV_WarnKiller = state
@@ -1852,22 +1851,14 @@ do
         })
 
         pcall(function() playerSection:AddDivider({ Text = "Colors" }) end)
-        playerSection:AddColorPicker({ Name = "Survivor Color", Flag = "Vora Survivor Color", Default = Vora_ESPState.SurvivorColor, Callback = function(color) Vora_ESPState.SurvivorColor = color; Vora_RefreshAllPlayers() end })
-        playerSection:AddColorPicker({ Name = "Killer Color", Flag = "Vora Killer Color", Default = Vora_ESPState.KillerColor, Callback = function(color) Vora_ESPState.KillerColor = color; Vora_RefreshAllPlayers() end })
-        playerSection:AddColorPicker({ Name = "Spectator Color", Flag = "Vora Spectator Color", Default = Vora_ESPState.SpectatorColor, Callback = function(color) Vora_ESPState.SpectatorColor = color; Vora_RefreshAllPlayers() end })
+        playerSection:AddColorPicker({ Name = "Survivor Color", Default = Vora_ESPState.SurvivorColor, Callback = function(color) Vora_ESPState.SurvivorColor = color; Vora_RefreshAllPlayers() end })
+        playerSection:AddColorPicker({ Name = "Killer Color", Default = Vora_ESPState.KillerColor, Callback = function(color) Vora_ESPState.KillerColor = color; Vora_RefreshAllPlayers() end })
+        playerSection:AddColorPicker({ Name = "Spectator Color", Default = Vora_ESPState.SpectatorColor, Callback = function(color) Vora_ESPState.SpectatorColor = color; Vora_RefreshAllPlayers() end })
 
-        local worldSection = VisualTabRef:AddSection({
-            Position = "Center",
-            Name = "World Highlight ESP",
-            Icon = "solar:map-point-wave-bold",
-            Box = true,
-            BoxBorder = true,
-            Opened = false,
-        })
+        local worldSection = Tabs.Visual:CreateSection({ Name = "World Highlight ESP" })
 
         worldSection:AddToggle({
             Name = "Enable World ESP",
-            Flag = "Vora Enable World ESP",
             Default = false,
             Callback = function(state)
                 Vora_ESPState.WorldMasterESP = state
@@ -1882,7 +1873,6 @@ do
 
         worldSection:AddDropdown({
             Name = "Select World Objects",
-            Flag = "Vora Select World Objects",
             Values = { "Generators", "Hooks", "Gates", "Windows", "Pallets", "SCP / Zombie" },
             Multi = true,
             AllowNone = true,
@@ -1906,7 +1896,6 @@ do
 
         worldSection:AddToggle({
             Name = "World Nametags",
-            Flag = "Vora World Nametags",
             Default = false,
             Callback = function(state)
                 Vora_ESPState.WorldNametags = state
@@ -1916,7 +1905,6 @@ do
 
         worldSection:AddToggle({
             Name = "World Distance ESP",
-            Flag = "Vora World Distance ESP",
             Default = false,
             Callback = function(state)
                 Vora_ESPState.WorldDistanceESP = state
@@ -1925,12 +1913,12 @@ do
         })
 
         pcall(function() worldSection:AddDivider({ Text = "Colors" }) end)
-        worldSection:AddColorPicker({ Name = "Generator Color", Flag = "Vora Generator Color", Default = Vora_ESPState.GeneratorColor, Callback = function(color) Vora_ESPState.GeneratorColor = color end })
-        worldSection:AddColorPicker({ Name = "Hook Color", Flag = "Vora Hook Color", Default = Vora_ESPState.HookColor, Callback = function(color) Vora_ESPState.HookColor = color end })
-        worldSection:AddColorPicker({ Name = "Gate Color", Flag = "Vora Gate Color", Default = Vora_ESPState.GateColor, Callback = function(color) Vora_ESPState.GateColor = color end })
-        worldSection:AddColorPicker({ Name = "Window Color", Flag = "Vora Window Color", Default = Vora_ESPState.WindowColor, Callback = function(color) Vora_ESPState.WindowColor = color end })
-        worldSection:AddColorPicker({ Name = "Pallet Color", Flag = "Vora Pallet Color", Default = Vora_ESPState.PalletColor, Callback = function(color) Vora_ESPState.PalletColor = color end })
-        worldSection:AddColorPicker({ Name = "SCP / Zombie Color", Flag = "Vora SCP Zombie Color", Default = Vora_ESPState.SCPZombieColor, Callback = function(color) Vora_ESPState.SCPZombieColor = color end })
+        worldSection:AddColorPicker({ Name = "Generator Color", Default = Vora_ESPState.GeneratorColor, Callback = function(color) Vora_ESPState.GeneratorColor = color end })
+        worldSection:AddColorPicker({ Name = "Hook Color", Default = Vora_ESPState.HookColor, Callback = function(color) Vora_ESPState.HookColor = color end })
+        worldSection:AddColorPicker({ Name = "Gate Color", Default = Vora_ESPState.GateColor, Callback = function(color) Vora_ESPState.GateColor = color end })
+        worldSection:AddColorPicker({ Name = "Window Color", Default = Vora_ESPState.WindowColor, Callback = function(color) Vora_ESPState.WindowColor = color end })
+        worldSection:AddColorPicker({ Name = "Pallet Color", Default = Vora_ESPState.PalletColor, Callback = function(color) Vora_ESPState.PalletColor = color end })
+        worldSection:AddColorPicker({ Name = "SCP / Zombie Color", Default = Vora_ESPState.SCPZombieColor, Callback = function(color) Vora_ESPState.SCPZombieColor = color end })
     end
 
     for _, player in ipairs(Players:GetPlayers()) do
@@ -3498,37 +3486,14 @@ game:GetService("RunService").RenderStepped:Connect(function()
     end
 end)
 
--- UI TABS
-
-local Tabs = {
-    Home = Window:AddTab({ Name = "Discord", Icon = "rbxassetid://94434236999817"}),
-    Main = Window:AddTab({ Name = "Main", Icon = "rbxassetid://98755624629571"}),
-    Visual = Window:AddTab({ Name = "Visual", Icon = "rbxassetid://100033680381365"}),
-    Player = Window:AddTab({ Name = "Players", Icon = "rbxassetid://108483430622128"}),
-    Survivor = Window:AddTab({ Name = "Survivors", Icon = "rbxassetid://110987169760162"}),
-    Killer = Window:AddTab({ Name = "Killers", Icon = "rbxassetid://82472368671405"}),
-    Aim = Window:AddTab({ Name = "Aim", Icon = "rbxassetid://134242818164054"}),
-    Mapping = Window:AddTab({ Name = "Map", Icon = "rbxassetid://95107167260947"}),
-    Misc = Window:AddTab({ Name = "Miscellaneous", Icon = "rbxassetid://70386228443175"}),
-    Settings = Window:AddTab({ Name = "Settings", Icon = "rbxassetid://80758916183665"})
-}
-
 if Window then
 
-do -- Masukin ke dalam Tab Players
-    local movSection = Tabs.Player:AddSection({
-        Position = "Center",
-        Name = "Movement",
-        Icon      = "solar:running-round-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+do
+    local movSection = Tabs.Player:CreateSection({ Name = "Movement" })
 
     movSection:AddToggle({
         Default = false,
         Name = "Auto Crouch BETA", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required",
-        Flag = "Auto Crouch BETA",
         Callback = function(v)
             if v and getgenv().VoraHubTier ~= "Premium" then
                 pcall(VD_Notify, "Premium Required âœ¨", "Fitur Auto Crouch BETA hanya untuk pengguna Key Premium!", 5)
@@ -3540,7 +3505,7 @@ do -- Masukin ke dalam Tab Players
 
     movSection:AddToggle({
         Default = false,
-        Name = "Speed Hack", Flag = "Speed Hack",
+        Name = "Speed Hack",
         Callback = function(v)
             VD.Speed = v
             if not v then
@@ -3550,7 +3515,7 @@ do -- Masukin ke dalam Tab Players
         end
     })
     movSection:AddSlider({
-        Name = "Speed Value", Flag = "Speed Value",
+        Name = "Speed Value",
         Min = 16, Max = 200, Default = 16,
         Callback = function(v)
             VD.SpeedValue =
@@ -3559,7 +3524,7 @@ do -- Masukin ke dalam Tab Players
     })
     movSection:AddToggle({
         Default = false,
-        Name = "Jump Hack", Flag = "Jump Hack",
+        Name = "Jump Hack",
         Callback = function(v)
             VD.Jump = v
             if not v then
@@ -3569,35 +3534,35 @@ do -- Masukin ke dalam Tab Players
         end
     })
     movSection:AddSlider({
-        Name = "Jump Power", Flag = "Jump Power",
+        Name = "Jump Power",
         Min = 50, Max = 300, Default = 50,
         Callback = function(v)
             VD.JumpValue =
                 v
         end
     })
-    movSection:AddToggle({ Default = false, Name = "Infinite Jump", Flag = "Infinite Jump", Callback = function(v) VD.InfiniteJump = v end })
-    movSection:AddToggle({ Default = false, Name = "Anti Fall Damage", Flag = "Anti Fall Damage", Callback = function(v) VD.AntiFallDamage = v end })
-    movSection:AddToggle({ Default = false, Name = "Noclip", Flag = "Noclip", Callback = function(v) 
+    movSection:AddToggle({ Default = false, Name = "Infinite Jump", Callback = function(v) VD.InfiniteJump = v end })
+    movSection:AddToggle({ Default = false, Name = "Anti Fall Damage", Callback = function(v) VD.AntiFallDamage = v end })
+    movSection:AddToggle({ Default = false, Name = "Noclip", Callback = function(v) 
         VD.Noclip = v 
         if not v and getgenv().VD_DisableNoclip then pcall(getgenv().VD_DisableNoclip) end
     end })
-    movSection:AddToggle({ Default = false, Name = "Moonwalk", Flag = "Moonwalk", Callback = function(v) VD.Moonwalk = v end })
+    movSection:AddToggle({ Default = false, Name = "Moonwalk", Callback = function(v) VD.Moonwalk = v end })
     movSection:AddSlider({
-        Name = "Moonwalk Zigzag Speed", Flag = "Moonwalk Zigzag Speed",
+        Name = "Moonwalk Zigzag Speed",
         Min = 1, Max = 30, Default = 11,
         Callback = function(v)
             VD.MoonwalkZigzagSpeed = v
         end
     })
     movSection:AddSlider({
-        Name = "Moonwalk Boost Power", Flag = "Moonwalk Boost Power",
+        Name = "Moonwalk Boost Power",
         Min = 1, Max = 2, Default = 1.08, Increment = 0.01,
         Callback = function(v)
             VD.MoonwalkBoostPower = v
         end
     })
-    movSection:AddToggle({ Default = false, Name = "Invisible Not Visual", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "Invisible Not Visual", Callback = function(v) 
+    movSection:AddToggle({ Default = false, Name = "Invisible Not Visual", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Invisible Not Visual hanya untuk pengguna Key Premium!", 5)
             return
@@ -3605,13 +3570,13 @@ do -- Masukin ke dalam Tab Players
         VD.InvisibleNotVisual = v; if not v then pcall(VD_SetInvisibleNotVisual, false) end 
     end })
     movSection:AddSlider({
-        Name = "Invisible Speed", Flag = "Invisible Speed",
+        Name = "Invisible Speed",
         Min = 1, Max = 999, Default = 5,
         Callback = function(v)
             VD.InvisibleSpeed = v
         end
     })
-    movSection:AddToggle({ Default = false, Name = "Anti AFK", Flag = "Anti AFK", Callback = function(v) VD.AntiAFK = v end })
+    movSection:AddToggle({ Default = false, Name = "Anti AFK", Callback = function(v) VD.AntiAFK = v end })
 end
 
 do -- Masukin ke dalam Tab Visual
@@ -3621,43 +3586,30 @@ do -- Masukin ke dalam Tab Visual
         end
     end)
 
-    local otherEsp = VisualTab:AddSection({
-        Position = "Center",
-        Name = "Other Markers",
-        Icon      = "solar:map-point-wave-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
-    otherEsp:AddToggle({ Default = false, Name = "Master Turn On Drawing ESP (PC Only!)", Flag = "Master Turn On Drawing ESP", Callback = function(v) VD.DRAWING_ESP = v end })
+    local funSection = Tabs.Visual:CreateSection({ Name = "Other Markers" })
+
+    otherEsp:AddToggle({ Default = false, Name = "Master Turn On Drawing ESP (PC Only!)", Callback = function(v) VD.DRAWING_ESP = v end })
     otherEsp:AddSlider({
-        Name = "Max ESP Distance", Flag = "Max ESP Distance",
+        Name = "Max ESP Distance",
         Min = 500, Max = 5000, Default = 2000,
         Callback = function(v)
             VD.MaxDistance = v
         end
     })
-    otherEsp:AddToggle({ Default = false, Name = "ESP Skeleton (PC Only!)", Flag = "ESP Skeleton", Callback = function(v) VD.ESP_Skeleton = v end })
-    otherEsp:AddToggle({ Default = false, Name = "ESP Velocity Arrows (PC Only!)", Flag = "ESP Velocity Arrows", Callback = function(v) VD.ESP_Velocity = v end })
-    otherEsp:AddToggle({ Default = false, Name = "ESP Offscreen Arrows (PC Only!)", Flag = "ESP Offscreen Arrows", Callback = function(v) VD.ESP_Offscreen = v end })
+    otherEsp:AddToggle({ Default = false, Name = "ESP Skeleton (PC Only!)", Callback = function(v) VD.ESP_Skeleton = v end })
+    otherEsp:AddToggle({ Default = false, Name = "ESP Velocity Arrows (PC Only!)", Callback = function(v) VD.ESP_Velocity = v end })
+    otherEsp:AddToggle({ Default = false, Name = "ESP Offscreen Arrows (PC Only!)", Callback = function(v) VD.ESP_Offscreen = v end })
 end
 
 do -- Masukin ke dalam Tab Aim
-    local aimbotSection = AimFeatureTabs.Aimbot:AddSection({
-        Position = "Center",
-        Name = "Aimbot",
-        Icon      = "solar:target-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local funSection = Tabs.Aim:CreateSection({ Name = "Aimbot" })
 
-    aimbotSection:AddToggle({ Default = false, Name = "Enable Aimbot", Flag = "Enable Aimbot", Callback = function(v) VD.AIM_Enabled = v end })
+    aimbotSection:AddToggle({ Default = false, Name = "Enable Aimbot", Callback = function(v) VD.AIM_Enabled = v end })
 
-    aimbotSection:AddToggle({ Default = false, Name = "Use RMB to aim", Flag = "Use RMB to aim", Callback = function(v) VD.AIM_UseRMB = v end })
-    aimbotSection:AddToggle({ Default = false, Name = "Show FOV Circle", Flag = "Show FOV Circle", Callback = function(v) VD.AIM_ShowFOV = v end })
+    aimbotSection:AddToggle({ Default = false, Name = "Use RMB to aim", Callback = function(v) VD.AIM_UseRMB = v end })
+    aimbotSection:AddToggle({ Default = false, Name = "Show FOV Circle", Callback = function(v) VD.AIM_ShowFOV = v end })
     aimbotSection:AddSlider({
-        Name = "FOV Size (aim radius on screen)", Flag = "FOV Size (aim radius on screen)",
+        Name = "FOV Size (aim radius on screen)",
         Min = 20, Max = 400, Default = 120,
         Callback = function(
             v)
@@ -3665,47 +3617,33 @@ do -- Masukin ke dalam Tab Aim
         end
     })
     aimbotSection:AddSlider({
-        Name = "Smoothness (Speed Aim)", Flag = "Smoothness",
+        Name = "Smoothness (Speed Aim)",
         Min = 0.1, Max = 10, Default = 0.3, Increment = 0.05,
         Callback = function(v)
             VD.AIM_Smooth = v
         end
     })
 
-    aimbotSection:AddToggle({ Default = false, Name = "Visibility Check", Flag = "Visibility Check", Callback = function(v) VD.AIM_VisCheck = v end })
-    aimbotSection:AddToggle({ Default = false, Name = "Prediction", Flag = "Prediction", Callback = function(v) VD.AIM_Predict = v end })
+    aimbotSection:AddToggle({ Default = false, Name = "Visibility Check", Callback = function(v) VD.AIM_VisCheck = v end })
+    aimbotSection:AddToggle({ Default = false, Name = "Prediction", Callback = function(v) VD.AIM_Predict = v end })
 
-    local crosshairSection = AimFeatureTabs.Aimbot:AddSection({
-        Position = "Center",
-        Name = "Advanced Crosshair",
-        Icon      = "solar:target-broken",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local crosshairSection = Tabs.Aim:CreateSection({ Name = "Advanced Crosshair" })
 
-    crosshairSection:AddToggle({ Default = false, Name = "Enable Crosshair", Flag = "CROSS_Enabled", Callback = function(v) VD.CROSS_Enabled = v pcall(VD_UpdateCrosshair) end })
-    crosshairSection:AddColorPicker({ Name = "Crosshair Color", Flag = "CROSS_Color", Default = VD.CROSS_Color or Color3.fromRGB(255, 255, 255), Callback = function(v) VD.CROSS_Color = v pcall(VD_UpdateCrosshair) end })
-    crosshairSection:AddDropdown({ Name = "Crosshair Style", Flag = "CROSS_Style", Default = "Dot", Values = { "Dot", "Plus", "X", "Box" }, Multi = false, Callback = function(v) VD.CROSS_Style = type(v) == "table" and v[1] or v pcall(VD_UpdateCrosshair) end })
-    crosshairSection:AddSlider({ Name = "Crosshair Size", Flag = "CROSS_Size", Min = 1, Max = 100, Default = 3, Increment = 1, Callback = function(v) VD.CROSS_Size = v pcall(VD_UpdateCrosshair) end })
-    crosshairSection:AddSlider({ Name = "Crosshair Thickness", Flag = "CROSS_Thickness", Min = 1, Max = 20, Default = 4, Increment = 1, Callback = function(v) VD.CROSS_Thickness = v pcall(VD_UpdateCrosshair) end })
-    crosshairSection:AddSlider({ Name = "Crosshair Gap", Flag = "CROSS_Gap", Min = 0, Max = 50, Default = 6, Increment = 1, Callback = function(v) VD.CROSS_Gap = v pcall(VD_UpdateCrosshair) end })
-    crosshairSection:AddSlider({ Name = "Position X Offset", Flag = "CROSS_PosX", Min = -500, Max = 500, Default = 0, Increment = 1, Callback = function(v) VD.CROSS_PosX = v pcall(VD_UpdateCrosshair) end })
-    crosshairSection:AddSlider({ Name = "Position Y Offset", Flag = "CROSS_PosY", Min = -500, Max = 500, Default = 0, Increment = 1, Callback = function(v) VD.CROSS_PosY = v pcall(VD_UpdateCrosshair) end })
+    crosshairSection:AddToggle({ Default = false, Name = "Enable Crosshair", Callback = function(v) VD.CROSS_Enabled = v pcall(VD_UpdateCrosshair) end })
+    crosshairSection:AddColorPicker({ Name = "Crosshair Color", Default = VD.CROSS_Color or Color3.fromRGB(255, 255, 255), Callback = function(v) VD.CROSS_Color = v pcall(VD_UpdateCrosshair) end })
+    crosshairSection:AddDropdown({ Name = "Crosshair Style", Default = "Dot", Values = { "Dot", "Plus", "X", "Box" }, Multi = false, Callback = function(v) VD.CROSS_Style = type(v) == "table" and v[1] or v pcall(VD_UpdateCrosshair) end })
+    crosshairSection:AddSlider({ Name = "Crosshair Size", Min = 1, Max = 100, Default = 3, Increment = 1, Callback = function(v) VD.CROSS_Size = v pcall(VD_UpdateCrosshair) end })
+    crosshairSection:AddSlider({ Name = "Crosshair Thickness", Min = 1, Max = 20, Default = 4, Increment = 1, Callback = function(v) VD.CROSS_Thickness = v pcall(VD_UpdateCrosshair) end })
+    crosshairSection:AddSlider({ Name = "Crosshair Gap", Min = 0, Max = 50, Default = 6, Increment = 1, Callback = function(v) VD.CROSS_Gap = v pcall(VD_UpdateCrosshair) end })
+    crosshairSection:AddSlider({ Name = "Position X Offset", Min = -500, Max = 500, Default = 0, Increment = 1, Callback = function(v) VD.CROSS_PosX = v pcall(VD_UpdateCrosshair) end })
+    crosshairSection:AddSlider({ Name = "Position Y Offset", Min = -500, Max = 500, Default = 0, Increment = 1, Callback = function(v) VD.CROSS_PosY = v pcall(VD_UpdateCrosshair) end })
 
-    local spearSection = AimFeatureTabs.Spear:AddSection({
-        Position = "Center",
-        Name = "Spear Aimbot",
-        Icon      = "solar:sword-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local spearSection = Tabs.Aim:CreateSection({ Name = "Spear Aimbot" })
 
-    spearSection:AddToggle({ Default = false, Name = "Spear Aimbot", Flag = "Spear Aimbot", Callback = function(v) VD.SPEAR_Aimbot = v end })
+    spearSection:AddToggle({ Default = false, Name = "Spear Aimbot", Callback = function(v) VD.SPEAR_Aimbot = v end })
 
     spearSection:AddSlider({
-        Name = "Spear Gravity", Flag = "Spear Gravity",
+        Name = "Spear Gravity",
         Min = 10, Max = 200, Default = 50,
         Callback = function(v)
             VD.SPEAR_Gravity =
@@ -3713,7 +3651,7 @@ do -- Masukin ke dalam Tab Aim
         end
     })
     spearSection:AddSlider({
-        Name = "Spear Speed", Flag = "Spear Speed",
+        Name = "Spear Speed",
         Min = 50, Max = 300, Default = 100,
         Callback = function(v)
             VD.SPEAR_Speed =
@@ -3723,40 +3661,34 @@ do -- Masukin ke dalam Tab Aim
 
     spearSection:AddDivider({ Text = "Veil Prediction" })
 
-    spearSection:AddToggle({ Default = false, Name = "Silent Aim Spear (Veil)", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "Silent Aim Spear (Veil)", Callback = function(v) 
+    spearSection:AddToggle({ Default = false, Name = "Silent Aim Spear (Veil)", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Silent Aim Spear (Veil) hanya untuk pengguna Key Premium!", 5)
             return
         end
         VeilConfig.Enabled = v 
     end })
-    spearSection:AddToggle({ Default = true, Name = "Show FOV Circle", Flag = "Show FOV Circle", Callback = function(v) VeilConfig.ShowFOV = v end })
-    spearSection:AddSlider({ Name = "FOV Radius", Flag = "FOV Radius", Min = 50, Max = 500, Default = 150, Callback = function(v) VeilConfig.FOV = v end })
-    spearSection:AddToggle({ Default = false, Name = "Auto Predict", Flag = "Auto Predict", Callback = function(v) VeilConfig.AutoPredict = v end })
-    spearSection:AddSlider({ Name = "Spear Speed", Flag = "Spear Speed", Min = 50, Max = 300, Default = 165, Callback = function(v) VeilConfig.SpearSpeed = v end })
-    spearSection:AddSlider({ Name = "Gravity", Flag = "Gravity", Min = 0, Max = 300, Default = math.floor(workspace.Gravity * 0.5), Callback = function(v) VeilConfig.Gravity = v end })
-    spearSection:AddSlider({ Name = "Horizontal Vector", Flag = "Horizontal Vector", Min = 0, Max = 10, Default = 2.8, Decimals = 1, Callback = function(v) VeilConfig.HorizontalPredictFactor = v end })
-    spearSection:AddDropdown({ Name = "Target Part", Flag = "Target Part", Values = {"Torso", "Head", "Root"}, Default = "Torso", Multi = false, Callback = function(v)
+    spearSection:AddToggle({ Default = true, Name = "Show FOV Circle", Callback = function(v) VeilConfig.ShowFOV = v end })
+    spearSection:AddSlider({ Name = "FOV Radius", Min = 50, Max = 500, Default = 150, Callback = function(v) VeilConfig.FOV = v end })
+    spearSection:AddToggle({ Default = false, Name = "Auto Predict", Callback = function(v) VeilConfig.AutoPredict = v end })
+    spearSection:AddSlider({ Name = "Spear Speed", Min = 50, Max = 300, Default = 165, Callback = function(v) VeilConfig.SpearSpeed = v end })
+    spearSection:AddSlider({ Name = "Gravity", Min = 0, Max = 300, Default = math.floor(workspace.Gravity * 0.5), Callback = function(v) VeilConfig.Gravity = v end })
+    spearSection:AddSlider({ Name = "Horizontal Vector", Min = 0, Max = 10, Default = 2.8, Decimals = 1, Callback = function(v) VeilConfig.HorizontalPredictFactor = v end })
+    spearSection:AddDropdown({ Name = "Target Part", Values = {"Torso", "Head", "Root"}, Default = "Torso", Multi = false, Callback = function(v)
         if type(v) == "table" then v = v[1] end
         VeilConfig.TargetPart = v
     end })
 
-    local tofAimSection = AimFeatureTabs.AutoAim:AddSection({
-        Position = "Center",
-        Name = "Auto Aim",
-        Icon      = "solar:magic-stick-3-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
-    tofAimSection:AddToggle({ Default = false, Name = "Auto Aim Twist of Fate", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "Auto Aim Twist of Fate", Callback = function(v) 
+    local tofAimSection = Tabs.Aim:CreateSection({ Name = "Auto Aim" })
+
+    tofAimSection:AddToggle({ Default = false, Name = "Auto Aim Twist of Fate", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Auto Aim Twist of Fate hanya untuk pengguna Key Premium!", 5)
             return
         end
         VD.AUTO_ToFAim = v 
     end })
-    tofAimSection:AddToggle({ Default = false, Name = "ToF Tracer", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "ToF Tracer", Callback = function(v) 
+    tofAimSection:AddToggle({ Default = false, Name = "ToF Tracer", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur ToF Tracer hanya untuk pengguna Key Premium!", 5)
             return
@@ -3764,14 +3696,14 @@ do -- Masukin ke dalam Tab Aim
         VD.AUTO_ToFTracer = v 
     end })
     tofAimSection:AddSlider({
-        Name = "ToF Aim Range (studs)", Flag = "ToF Aim Range (studs)",
+        Name = "ToF Aim Range (studs)", (studs)",
         Min = 20, Max = 180, Default = 90,
         Callback = function(v)
             VD.AUTO_ToFAimRange = v
         end
     })
     tofAimSection:AddSlider({
-        Name = "Aim Strictness (0: Segala arah, 1: Lurus)", Flag = "Aim Strictness",
+        Name = "Aim Strictness (0: Segala arah, 1: Lurus)",
         Min = 0, Max = 1, Default = 0.5, Increment = 0.05,
         Callback = function(v)
             VD.AUTO_ToFDotThreshold = v
@@ -3780,57 +3712,36 @@ do -- Masukin ke dalam Tab Aim
 end
 
 do -- Masukin ke dalam Tab Main
-    local camSection = VisualFeatureTabs.Camera:AddSection({
-        Position = "Center",
-        Name = "Camera",
-        Icon      = "solar:camera-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local camSection = Tabs.Main:CreateSection({ Name = "Camera" })
 
-    camSection:AddToggle({ Default = false, Name = "Enable Camera FOV override", Flag = "Enable Camera FOV override", Callback = function(v) VD.CAM_FOVEnabled = v end })
+    camSection:AddToggle({ Default = false, Name = "Enable Camera FOV override", Callback = function(v) VD.CAM_FOVEnabled = v end })
     camSection:AddSlider({
-        Name = "Camera FOV", Flag = "Camera FOV",
+        Name = "Camera FOV", 
         Min = 30, Max = 140, Default = 90,
         Callback = function(v)
             VD.CAM_FOV =
                 v
         end
     })
-    camSection:AddToggle({ Default = false, Name = "Third Person (Killer only)", Flag = "Third Person (Killer only)", Callback = function(v) VD.CAM_ThirdPerson = v end })
-    camSection:AddToggle({ Default = false, Name = "Shift Lock (auto face camera)", Flag = "Shift Lock (auto face camera)", Callback = function(v) VD.CAM_ShiftLock = v end })
-    camSection:AddToggle({ Default = false, Name = "Infinity Zoom Out", Flag = "Infinity Zoom Out", Callback = function(v) 
+    camSection:AddToggle({ Default = false, Name = "Third Person (Killer only)", Callback = function(v) VD.CAM_ThirdPerson = v end })
+    camSection:AddToggle({ Default = false, Name = "Shift Lock (auto face camera)", camera)", Callback = function(v) VD.CAM_ShiftLock = v end })
+    camSection:AddToggle({ Default = false, Name = "Infinity Zoom Out", Callback = function(v) 
         VD.CAM_InfinityZoom = v 
         LocalPlayer.CameraMaxZoomDistance = v and math.huge or 128 
         LocalPlayer.CameraMinZoomDistance = v and 0 or 0.5 
     end })
 
-    local visualSection = VisualFeatureTabs.Lighting:AddSection({
-        Position = "Center",
-        Name = "Visual",
-        Icon      = "solar:sun-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local visualSection = Tabs.Visual:CreateSection({ Name = "Features" })
 
-    visualSection:AddToggle({ Default = false, Name = "No Fog (remove fog/post effects)", Flag = "No Fog (remove fog/post effects)", Callback = function(v) VD.NO_Fog = v end })
-    visualSection:AddToggle({ Default = false, Name = "Fullbright (lighting preset)", Flag = "Fullbright (lighting preset)", Callback = function(v) VD.Fullbright = v end })
+    visualSection:AddToggle({ Default = false, Name = "No Fog (remove fog/post effects)", Callback = function(v) VD.NO_Fog = v end })
+    visualSection:AddToggle({ Default = false, Name = "Fullbright (lighting preset)", Callback = function(v) VD.Fullbright = v end })
 end
 
 do -- Masukin ke dalam Tab Survivors
-    local combatSurv = MainFeatureTabs.Survivor:AddSection({
-        Position = "Center",
-        Name = "Survivor",
-        Icon      = "solar:shield-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local combatSurv = Tabs.Survivor:CreateSection({ Name = "Survivors" })
 
-    combatSurv:AddToggle({ Default = false, Name = "Swift Vault", Flag = "SwiftVault", Callback = function(v) VD.SURV_AutoVault = v end })
-    combatSurv:AddToggle({ Default = false, Name = "Swift Vault V2", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "SURV_SwiftVaultV2", Callback = function(v) 
+    combatSurv:AddToggle({ Default = false, Name = "Swift Vault", Callback = function(v) VD.SURV_AutoVault = v end })
+    combatSurv:AddToggle({ Default = false, Name = "Swift Vault V2", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Swift Vault V2 hanya untuk pengguna Key Premium!", 5)
             return
@@ -3842,25 +3753,25 @@ do -- Masukin ke dalam Tab Survivors
         end
     end })
     combatSurv:AddSlider({
-        Name = "Vault Speed", Flag = "SURV_SwiftVaultSpeed",
+        Name = "Vault Speed", 
         Min = 10, Max = 20, Default = 13, Increment = 1,
         Callback = function(v) VD.SURV_VaultSpeed = v end
     })
-    combatSurv:AddToggle({ Default = false, Name = "Pallet Reflex", Flag = "Pallet Reflex", Callback = function(v) VD.SURV_AutoPallet = v end })
+    combatSurv:AddToggle({ Default = false, Name = "Pallet Reflex", Callback = function(v) VD.SURV_AutoPallet = v end })
     combatSurv:AddSlider({
-        Name = "Pallet Trigger Range (studs)", Flag = "Pallet Trigger Range",
+        Name = "Pallet Trigger Range (studs)", 
         Min = 5, Max = 50, Default = 20, Increment = 1,
         Callback = function(v) VD.SURV_AutoPalletDist = v end
     })
-    combatSurv:AddToggle({ Default = false, Name = "Anti Knock", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "Anti Knock", Callback = function(v) 
+    combatSurv:AddToggle({ Default = false, Name = "Anti Knock", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Anti Knock hanya untuk pengguna Key Premium!", 5)
             return
         end
         VD.SURV_AntiKnock = v 
     end })
-    combatSurv:AddToggle({ Default = false, Name = "Instant Heal (Self)", Flag = "Instant Heal (Self)", Callback = function(v) setInstantHealSelf(v) end })
-    combatSurv:AddToggle({ Default = false, Name = "Auto Heal All", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "Auto Heal All", Callback = function(v) 
+    combatSurv:AddToggle({ Default = false, Name = "Instant Heal (Self)", Callback = function(v) setInstantHealSelf(v) end })
+    combatSurv:AddToggle({ Default = false, Name = "Auto Heal All", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Auto Heal All hanya untuk pengguna Key Premium!", 5)
             return
@@ -3869,46 +3780,39 @@ do -- Masukin ke dalam Tab Survivors
     end })
 
     combatSurv:AddToggle({
-        Default = false, Name = "First Person Camera (Survivor)", Flag = "First Person Camera (Survivor)", Callback = function(v)
+        Default = false, Name = "First Person Camera (Survivor)", Callback = function(v)
         VD.SURV_FirstPerson = v
         if not v then
             pcall(RestoreFirstPersonCamera)
         end
     end })
-    combatSurv:AddToggle({ Default = false, Name = "Auto Parry", Flag = "Auto Parry", Callback = function(v) VD_SetAutoParry(v) end })
+    combatSurv:AddToggle({ Default = false, Name = "Auto Parry", Callback = function(v) VD_SetAutoParry(v) end })
     combatSurv:AddSlider({
-        Name = "Parry Distance Trigger", Flag = "Parry Distance Trigger",
+        Name = "Parry Distance Trigger", Trigger",
         Min = 2, Max = 25, Default = 8, Increment = 1,
         Callback = function(v)
             VD.SURV_ParryDistance = v
         end
     })
     combatSurv:AddToggle({
-        Default = false, Name = "Show Parry Range Circle", Flag = "Show Parry Range Circle", Callback = function(v)
+        Default = false, Name = "Show Parry Range Circle", Callback = function(v)
         VD.SURV_ShowParryCircle = v
         if not v then VD_ParryRange.Transparency = 1 end
     end })
 end
 
 do -- Masukin ke dalam Tab Killer
-    local combatKiller = MainKillerFeatureTabs.Killer:AddSection({
-        Position = "Center",
-        Name = "Killer",
-        Icon      = "solar:danger-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local combatKiller = Tabs.Killer:CreateSection({ Name = "Killers" })
 
-    combatKiller:AddToggle({ Default = false, Name = "Auto Attack", Flag = "Auto Attack", Callback = function(v) VD.AUTO_Attack = v end })
-    combatKiller:AddToggle({ Default = false, Name = "Inf Grab (Myers)", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "Inf Grab (Myers)", Callback = function(v) 
+    combatKiller:AddToggle({ Default = false, Name = "Auto Attack", Callback = function(v) VD.AUTO_Attack = v end })
+    combatKiller:AddToggle({ Default = false, Name = "Inf Grab (Myers)", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Inf Grab (Myers) hanya untuk pengguna Key Premium!", 5)
             return
         end
         setMyersGrab(v) 
     end })
-    combatKiller:AddToggle({ Default = false, Name = "Undraggable Button (Inf Grab)", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "Undraggable Button (Inf Grab)", Callback = function(v) 
+    combatKiller:AddToggle({ Default = false, Name = "Undraggable Button (Inf Grab)", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Undraggable Button (Inf Grab) hanya untuk pengguna Key Premium!", 5)
             return
@@ -3916,59 +3820,51 @@ do -- Masukin ke dalam Tab Killer
         setMyersDragLocked(v) 
     end })
     combatKiller:AddSlider({
-        Name = "Attack Range", Flag = "Attack Range",
+        Name = "Attack Range",
         Min = 5, Max = 20, Default = 12,
         Callback = function(v)
             VD.AUTO_AttackRange =
                 v
         end
     })
-    combatKiller:AddToggle({ Default = false, Name = "Hitbox Expand", Flag = "Hitbox Expand", Callback = function(v) VD.HITBOX_Enabled = v end })
+    combatKiller:AddToggle({ Default = false, Name = "Hitbox Expand", Callback = function(v) VD.HITBOX_Enabled = v end })
     combatKiller:AddSlider({
-        Name = "Hitbox Size", Flag = "Hitbox Size",
+        Name = "Hitbox Size",
         Min = 5, Max = 40, Default = 15,
         Callback = function(v)
             VD.HITBOX_Size =
                 v
         end
     })
-    combatKiller:AddToggle({ Default = false, Name = "Double Tap", Flag = "Double Tap", Callback = function(v) VD.KILLER_DoubleTap = v end })
-    combatKiller:AddToggle({ Default = false, Name = "Infinite Lunge", Flag = "Infinite Lunge", Callback = function(v) VD.KILLER_InfiniteLunge = v end })
+    combatKiller:AddToggle({ Default = false, Name = "Double Tap", Callback = function(v) VD.KILLER_DoubleTap = v end })
+    combatKiller:AddToggle({ Default = false, Name = "Infinite Lunge", Callback = function(v) VD.KILLER_InfiniteLunge = v end })
 
-    local utilKiller = MainKillerFeatureTabs.Utilities:AddSection({
-        Position = "Center",
-        Name = "Utilities",
-        Icon      = "solar:settings-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local utilKiller = Tabs.Killer:CreateSection({ Name = "Utilities" })
 
-    utilKiller:AddToggle({ Default = false, Name = "Auto Hook", Flag = "Auto Hook", Callback = function(v) VD.KILLER_AutoHook = v end })
-    utilKiller:AddToggle({ Default = false, Name = "Destroy Pallets", Flag = "Destroy Pallets", Callback = function(v) VD.KILLER_DestroyPallets = v end })
+    utilKiller:AddToggle({ Default = false, Name = "Auto Hook",  Callback = function(v) VD.KILLER_AutoHook = v end })
+    utilKiller:AddToggle({ Default = false, Name = "Destroy Pallets", Callback = function(v) VD.KILLER_DestroyPallets = v end })
     utilKiller:AddToggle({
         Default = false,
-        Name = "Anti Blind (Flashlight)", Flag = "Anti Blind (Flashlight)",
+        Name = "Anti Blind (Flashlight)", 
         Callback = function(v)
             VD.KILLER_AntiBlind = v; pcall(SetupAntiBlind)
         end
     })
     utilKiller:AddToggle({
         Default = false,
-        Name = "Remove Palletwrong (All)", Flag = "Remove Palletwrong (All)",
+        Name = "Remove Palletwrong (All)", 
         Callback = function(v)
             VD.KILLER_NoPalletStun = v; pcall(SetupNoPalletStun)
         end
     })
-    utilKiller:AddToggle({ Default = false, Name = "No Slowdown", Flag = "No Slowdown", Callback = function(v) VD.KILLER_NoSlowdown = v end })
-    utilKiller:AddToggle({ Default = false, Name = "Beat Killer (auto kill)", Flag = "Beat Killer (auto kill)", Callback = function(v) VD.BEAT_Killer = v end })
+    utilKiller:AddToggle({ Default = false, Name = "No Slowdown", Callback = function(v) VD.KILLER_NoSlowdown = v end })
+    utilKiller:AddToggle({ Default = false, Name = "Beat Killer (auto kill)", Callback = function(v) VD.BEAT_Killer = v end })
     pcall(function()
         local customMaskedMasks = {"Richard", "Tony", "Brandon", "Jake", "Richter", "Graham", "Alex"}
         utilKiller:AddDropdown({
             Name = "Custom Masked",
             Locked = getgenv().VoraHubTier ~= "Premium",
             TextLocked = "Premium Required",
-            Flag = "Custom Masked",
             Values = customMaskedMasks,
             Multi = false,
             Default = VD.KILLER_CustomMasked or "Richard",
@@ -4012,17 +3908,10 @@ do -- Masukin ke dalam Tab Killer
 end
 
 do -- Masukin ke dalam Tab Main
-    local escapeSurv = MainFeatureTabs.Escape:AddSection({
-        Position = "Center",
-        Name = "Escape",
-        Icon      = "solar:exit-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local escapeSurv = Tabs.Main:CreateSection({ Name = "Escape" })
 
-    escapeSurv:AddToggle({ Default = false, Name = "Bypass Gate", Flag = "Bypass Gate", Callback = function(v) VD.BypassGate = v; if not v then pcall(VD_RestoreGateParts) end end })
-    escapeSurv:AddToggle({ Default = false, Name = "Beat Survivor (auto exit)", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "Beat Survivor (auto exit)", Callback = function(v) 
+    escapeSurv:AddToggle({ Default = false, Name = "Bypass Gate", Callback = function(v) VD.BypassGate = v; if not v then pcall(VD_RestoreGateParts) end end })
+    escapeSurv:AddToggle({ Default = false, Name = "Beat Survivor (auto exit)", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Beat Survivor hanya untuk pengguna Key Premium!", 5)
             return
@@ -4030,29 +3919,20 @@ do -- Masukin ke dalam Tab Main
         VD.BEAT_Survivor = v 
     end })
 
-    escapeSurv:AddToggle({ Default = false, Name = "Flee Killer", Flag = "Flee Killer", Callback = function(v) VD.SURV_FleeKiller = v end })
+    escapeSurv:AddToggle({ Default = false, Name = "Flee Killer", Callback = function(v) VD.SURV_FleeKiller = v end })
     escapeSurv:AddSlider({
-        Name = "Flee Distance", Flag = "Flee Distance",
+        Name = "Flee Distance",
         Min = 15, Max = 80, Default = 40,
         Callback = function(v) VD.SURV_FleeDistance = v end
     })
 end
 
 do -- Masukin ke dalam Tab Main
+    local genAuti = Tabs.Main:CreateSection({ Name = "Automation" })
 
-    local genAuto = MainFeatureTabs.Automation:AddSection({
-        Position = "Center",
-        Name = "Automation",
-        Icon      = "solar:bolt-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
-
-
-    genAuto:AddToggle({ Default = false, Name = "Auto Skillcheck", Flag = "Auto Skillcheck", Callback = function(v) VD_SetAutoSkillcheck(v) end })
-    genAuto:AddToggle({ Default = false, Name = "Hide Skillcheck UI", Flag = "Hide Skillcheck UI", Callback = function(v) VD.HideSkillUI = v end })
-    genAuto:AddToggle({ Default = false, Name = "Boost Gen Bypass", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "Boost Gen Bypass", Callback = function(v) 
+    genAuto:AddToggle({ Default = false, Name = "Auto Skillcheck", Callback = function(v) VD_SetAutoSkillcheck(v) end })
+    genAuto:AddToggle({ Default = false, Name = "Hide Skillcheck UI", Callback = function(v) VD.HideSkillUI = v end })
+    genAuto:AddToggle({ Default = false, Name = "Boost Gen Bypass", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Boost Gen Bypass hanya untuk pengguna Key Premium!", 5)
             return
@@ -4061,7 +3941,6 @@ do -- Masukin ke dalam Tab Main
     end })
     genAuto:AddDropdown({
         Name = "Skillcheck Mode",
-        Flag = "Skillcheck Mode",
         Values = { "Normal", "Perfect", "Instant" },
         Default = "Normal",
         DisabledOptions = getgenv().VoraHubTier ~= "Premium" and { "Instant" } or {},
@@ -4084,16 +3963,9 @@ do -- Masukin ke dalam Tab Main
 end
 
 do -- Masukin ke dalam Misc
-    local flingSection = PlayerFeatureTabs.Fling:AddSection({
-        Position = "Center",
-        Name = "Fling",
-        Icon      = "solar:wind-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local flingSection = Tabs.Misc:CreateSection({ Name = "Fling" })
 
-    flingSection:AddToggle({ Default = false, Name = "Enable Fling", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Flag = "Enable Fling", Callback = function(v) 
+    flingSection:AddToggle({ Default = false, Name = "Enable Fling", Locked = getgenv().VoraHubTier ~= "Premium", TextLocked = "Premium Required", Callback = function(v) 
         if v and getgenv().VoraHubTier ~= "Premium" then
             pcall(VD_Notify, "Premium Required âœ¨", "Fitur Fling hanya untuk pengguna Key Premium!", 5)
             return
@@ -4101,7 +3973,7 @@ do -- Masukin ke dalam Misc
         VD.FLING_Enabled = v 
     end })
     flingSection:AddSlider({
-        Name = "Fling Strength", Flag = "Fling Strength",
+        Name = "Fling Strength", 
         Min = 1000, Max = 50000, Default = 10000,
         Callback = function(
             v)
@@ -4203,14 +4075,7 @@ local function playEmote(name)
 end
 
 do -- Masukin ke dalam Tab Misc
-    local emoteSection = PlayerFeatureTabs.Emote:AddSection({
-        Position = "Center",
-        Name = "Player Emote [BETA]",
-        Icon      = "solar:music-note-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local emoteSection = Tabs.Misc:CreateSection({ Name = "Players Emote [BETA]" })
 
     VD.SelectedEmote = "Friday Night"
     VD.EmoteEnabled = false
@@ -4218,7 +4083,6 @@ do -- Masukin ke dalam Tab Misc
     emoteSection:AddToggle({
         Default = false,
         Name = "Enable Emote",
-        Flag = "Enable Emote",
         Callback = function(v)
             VD.EmoteEnabled = v
             if v then
@@ -4231,7 +4095,6 @@ do -- Masukin ke dalam Tab Misc
 
     emoteSection:AddDropdown({
         Name = "Select Emote",
-        Flag = "Select Emote",
         Values = {
             "Friday Night", "WarCry", "24 Hour Cinderella", "Applause", "Arm Swing", "Backflip", "California Girls", "Christmas Spirit", "Floating Rest"
         },
@@ -4248,37 +4111,23 @@ do -- Masukin ke dalam Tab Misc
 end
 
 do -- Masukin ke dalam Tab Misc
-    local funSection = PlayerMiscFeatureTabs.Fun:AddSection({
-        Position = "Center",
-        Name = "Spoof Stats [Visual Only]",
-        Icon = "solar:gamepad-bold",
-        Box = true,
-        BoxBorder = true,
-        Opened = true,
-    })
+    local funSection = Tabs.Misc:CreateSection({ Name = "Features" })
 
     local spoofLevel, spoofGears, spoofScrews = "0", "0", "0"
 
     funSection:AddTextInput({
         Name = "Set Level",
-        Flag = "SpoofLevel",
-        Numeric = true,
         Default = "0",
         Callback = function(value) spoofLevel = value end
     })
 
     funSection:AddTextInput({
         Name = "Set Gears",
-        Flag = "SpoofGears",
-        Numeric = true,
-        Default = "0",
         Callback = function(value) spoofGears = value end
     })
 
     funSection:AddTextInput({
         Name = "Set Screws",
-        Flag = "SpoofScrews",
-        Numeric = true,
         Default = "0",
         Callback = function(value) spoofScrews = value end
     })
@@ -4300,14 +4149,7 @@ do -- Masukin ke dalam Tab Misc
 end
 
 do -- Masukin ke dalam Tab Settings
-    local streamerSection = PlayerMiscFeatureTabs.Streamer:AddSection({
-        Position = "Center",
-        Name = "Streamer Mode",
-        Icon      = "solar:users-group-rounded-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local streamerSection = Tabs.Settings:CreateSection({ Name = "streamer mode" })
 
     local FakeNameConnection = nil
 
@@ -4350,7 +4192,6 @@ do -- Masukin ke dalam Tab Settings
     streamerSection:AddToggle({
         Default = false,
         Name = "Hide Name",
-        Flag = "Hide Name",
         Callback = function(v)
             pcall(enableFakeName, v)
         end
@@ -4358,14 +4199,7 @@ do -- Masukin ke dalam Tab Settings
 end
 
 do -- Masukin ke dalam Tab Settings
-    local avatarSection = PlayerMiscFeatureTabs.Avatar:AddSection({
-        Position = "Center",
-        Name = "Copy Avatar",
-        Icon      = "solar:users-group-rounded-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local avatarSection = Tabs.Settings:CreateSection({ Name = "Copy Avatar" })
 
     local ORIGINAL_DESC = nil
     local CURRENT_AVATAR = nil
@@ -4481,7 +4315,6 @@ do -- Masukin ke dalam Tab Settings
 
     local playerDropdown = avatarSection:AddDropdown({
         Name = "Select Player Online",
-        Flag = "AvatarTargetPlayer",
         Values = getPlayerNames(),
         Multi = false,
         Callback = function(option)
@@ -6959,14 +6792,8 @@ end)
 
 
 do -- Masukin ke dalam Tab Map
-    local tpMapSection = MappingTab:AddSection({
-        Position = "Center",
-        Name = "Teleport",
-        Icon      = "solar:map-point-bold",
-        Box       = true,
-        BoxBorder = true,
-        Opened    = false,
-    })
+    local tpMapSection = Tabs.Map:CreateSection({ Name = "Teleport" })
+
     local function getTeleportPlayerNames()
         local names = {}
         for _, p in ipairs(Players:GetPlayers()) do
@@ -6978,7 +6805,6 @@ do -- Masukin ke dalam Tab Map
 
     local tpPlayerDropdown = tpMapSection:AddDropdown({
         Name = "Select Player to Teleport",
-        Flag = "TP_TargetPlayer",
         Values = getTeleportPlayerNames(),
         Multi = false,
         Callback = function(option)
@@ -7010,20 +6836,10 @@ do -- Masukin ke dalam Tab Map
 end
 
 do -- Masukin ke dalam Tab Map
-    local radarTab = MappingFeatureTabs.Radar
-    if radarTab then
-        local radarSection = radarTab:AddSection({
-            Position = "Center",
-            Name = "Radar Configuration",
-            Icon      = "solar:radar-bold",
-            Box       = true,
-            BoxBorder = true,
-            Opened    = false,
-        })
-        
+        local radarSection = Tabs.Map:CreateSection({ Name = "Features" })
         radarSection:AddToggle({
             Default = false,
-            Name = "Radar Enabled", Flag = "Radar Enabled",
+            Name = "Radar Enabled",
             Callback = function(state)
                 VD.RADAR_Enabled = state
                 if not state and radarGui then radarGui.Enabled = false end
@@ -7031,46 +6847,39 @@ do -- Masukin ke dalam Tab Map
         })
         
         radarSection:AddSlider({
-            Name = "Radar Size", Flag = "Radar Size",
+            Name = "Radar Size", 
             Min = 100, Max = 300, Default = 150,
             Callback = function(value) VD.RADAR_Size = value end
         })
         
         radarSection:AddSlider({
-            Name = "Radar Range", Flag = "Radar Range",
+            Name = "Radar Range",
             Min = 50, Max = 500, Default = 250,
             Callback = function(value) VD.RADAR_Range = value end
         })
         
         radarSection:AddSlider({
-            Name = "Radar Transparency", Flag = "Radar Transparency",
+            Name = "Radar Transparency", 
             Min = 0, Max = 100, Default = 20,
             Callback = function(value) VD.RADAR_Transparency = value / 100 end
         })
         
         radarSection:AddToggle({
             Default = false,
-            Name = "Radar Circle Mode", Flag = "Radar Circle Mode",
+            Name = "Radar Circle Mode",
             Callback = function(state) VD.RADAR_Circle = state end
         })
+
+        local radarFilterSection = Tabs.Map:CreateSection({ Name = "Features" })
         
-        local radarFilterSection = radarTab:AddSection({
-            Position = "Center",
-            Name = "Radar Filters",
-            Icon      = "solar:filter-bold",
-            Box       = true,
-            BoxBorder = true,
-            Opened    = false,
-        })
-        
-        radarFilterSection:AddToggle({ Default = false, Name = "Show Killer", Flag = "Radar Show Killer", Callback = function(state) VD.RADAR_ShowKiller = state end })
-        radarFilterSection:AddToggle({ Default = false, Name = "Show Survivor", Flag = "Radar Show Survivor", Callback = function(state) VD.RADAR_ShowSurvivor = state end })
-        radarFilterSection:AddToggle({ Default = false, Name = "Show Generator", Flag = "Radar Show Generator", Callback = function(state) VD.RADAR_ShowGenerator = state end })
-        radarFilterSection:AddToggle({ Default = false, Name = "Show Pallet", Flag = "Radar Show Pallet", Callback = function(state) VD.RADAR_ShowPallet = state end })
-        radarFilterSection:AddToggle({ Default = false, Name = "Show Hook", Flag = "Radar Show Hook", Callback = function(state) VD.RADAR_ShowHook = state end })
-        radarFilterSection:AddToggle({ Default = false, Name = "Show Gate", Flag = "Radar Show Gate", Callback = function(state) VD.RADAR_ShowGate = state end })
-        radarFilterSection:AddToggle({ Default = false, Name = "ShowWindow", Flag = "Radar Show Window", Callback = function(state) VD.RADAR_ShowWindow = state end })
-        radarFilterSection:AddToggle({ Default = false, Name = "Show Zombie", Flag = "Radar Show Zombie", Callback = function(state) VD.RADAR_ShowZombie = state end })
+        radarFilterSection:AddToggle({ Default = false, Name = "Show Killer", Callback = function(state) VD.RADAR_ShowKiller = state end })
+        radarFilterSection:AddToggle({ Default = false, Name = "Show Survivor", Callback = function(state) VD.RADAR_ShowSurvivor = state end })
+        radarFilterSection:AddToggle({ Default = false, Name = "Show Generator", Callback = function(state) VD.RADAR_ShowGenerator = state end })
+        radarFilterSection:AddToggle({ Default = false, Name = "Show Pallet", Callback = function(state) VD.RADAR_ShowPallet = state end })
+        radarFilterSection:AddToggle({ Default = false, Name = "Show Hook", Callback = function(state) VD.RADAR_ShowHook = state end })
+        radarFilterSection:AddToggle({ Default = false, Name = "Show Gate", Callback = function(state) VD.RADAR_ShowGate = state end })
+        radarFilterSection:AddToggle({ Default = false, Name = "ShowWindow", Callback = function(state) VD.RADAR_ShowWindow = state end })
+        radarFilterSection:AddToggle({ Default = false, Name = "Show Zombie", Callback = function(state) VD.RADAR_ShowZombie = state end })
     end
 end
 
