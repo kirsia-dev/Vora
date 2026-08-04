@@ -18,7 +18,7 @@ local isMobile = UserInputService.TouchEnabled and not UserInputService.Keyboard
 
 local VoraLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/juansyahrz17-prog/Coralx/refs/heads/main/lib.lua"))()
 
-if isMobile then UI.Mobile = true end
+if isMobile and UI then UI.Mobile = true end
 print("[Universal] Platform:", isMobile and "MOBILE" or "PC")
 
 local Window = VoraLib:CreateWindow({
@@ -525,7 +525,8 @@ local VD_To_Flag = {
     Speed = "Speed Hack",
     CAM_FOV = "Camera FOV",
     ESP_Offscreen = "ESP Offscreen Arrows",
-    KILLER_DoubleTap = "Double Tap",    CAM_FOVEnabled = "Enable Camera FOV override",
+    KILLER_DoubleTap = "Double Tap",
+    CAM_FOVEnabled = "Enable Camera FOV override",
     FLING_Strength = "Fling Strength",
     ESP_Skeleton = "ESP Skeleton",
     Noclip = "Noclip",
@@ -544,7 +545,7 @@ local VD_To_Flag = {
     Destroyed = "Solid UI Mode (No Transparency)",
     AUTO_AttackRange = "Attack Range",
     AIM_FOV = "FOV Size (aim radius on screen)",
-    DRAWING_ESP = "Master Turn On Drawing ESP",    
+    DRAWING_ESP = "Master Turn On Drawing ESP",
     KILLER_NoPalletStun = "Remove Palletwrong (All)",
     CAM_ThirdPerson = "Third Person (Killer only)",
     CAM_InfinityZoom = "Infinity Zoom Out",
@@ -625,8 +626,7 @@ do
             Density = atm.Density,
             Offset = atm.Offset,
             Glare = atm.Glare,
-            Haze = atm
-                .Haze
+            Haze = atm.Haze
         }
     end
     if blur then originalLighting.Blur = { Size = blur.Size } end
@@ -1381,7 +1381,7 @@ do
     end
 
     local function Vora_PickWorldPart(model, cat)
-        if not (modVoraand Vora_Alive(model)) then return nil end
+        if not (model and Vora_Alive(model)) then return nil end
         if cat == "Generator" then
             local hitbox = model:FindFirstChild("HitBox", true) or model:FindFirstChild("GeneratorPoint", true)
             if Vora_ValidPart(hitbox) then return hitbox end
@@ -2002,12 +2002,10 @@ task.spawn(function()
                 end
                 if v:IsA("BlurEffect") and originalLighting.Blur then v.Size = originalLighting.Blur.Size or 0 end
                 if v:IsA("ColorCorrectionEffect") and originalLighting.ColorCorrection then
-                    v.Enabled = originalLighting
-                        .ColorCorrection.Enabled or false
+                    v.Enabled = originalLighting.ColorCorrection.Enabled or false
                 end
                 if v:IsA("SunRaysEffect") and originalLighting.SunRays then
-                    v.Enabled = originalLighting.SunRays.Enabled or
-                        false
+                    v.Enabled = originalLighting.SunRays.Enabled or false
                 end
             end
         end
@@ -3214,15 +3212,17 @@ VeilState = {
 VeilVelocityCache = {}
 
 VeilDraw = {
-    FOVCircle = Drawing.new("Circle"),
+    FOVCircle = DrawingAvailable and Drawing.new("Circle") or nil,
     Highlight = Instance.new("Highlight"),
-    Tracer    = Drawing.new("Circle"),
+    Tracer    = DrawingAvailable and Drawing.new("Circle") or nil,
 }
 
-VeilDraw.FOVCircle.Color     = Color3.fromRGB(255, 0, 255)
-VeilDraw.FOVCircle.Thickness = 1.5
-VeilDraw.FOVCircle.Filled    = false
-VeilDraw.FOVCircle.Visible   = false
+if VeilDraw.FOVCircle then
+    VeilDraw.FOVCircle.Color     = Color3.fromRGB(255, 0, 255)
+    VeilDraw.FOVCircle.Thickness = 1.5
+    VeilDraw.FOVCircle.Filled    = false
+    VeilDraw.FOVCircle.Visible   = false
+end
 
 VeilDraw.Highlight.Name                = "VD_VeilTarget"
 VeilDraw.Highlight.FillColor           = Color3.fromRGB(255, 0, 0)
@@ -3230,11 +3230,13 @@ VeilDraw.Highlight.OutlineColor        = Color3.fromRGB(255, 255, 255)
 VeilDraw.Highlight.FillTransparency    = 0.5
 VeilDraw.Highlight.OutlineTransparency = 0
 
-VeilDraw.Tracer.Thickness = 2
-VeilDraw.Tracer.Radius    = 5
-VeilDraw.Tracer.Color     = Color3.fromRGB(255, 0, 255)
-VeilDraw.Tracer.Filled    = true
-VeilDraw.Tracer.Visible   = false
+if VeilDraw.Tracer then
+    VeilDraw.Tracer.Thickness = 2
+    VeilDraw.Tracer.Radius    = 5
+    VeilDraw.Tracer.Color     = Color3.fromRGB(255, 0, 255)
+    VeilDraw.Tracer.Filled    = true
+    VeilDraw.Tracer.Visible   = false
+end
 
 function Veil_GetRealVelocity(part, playerName)
     if not part then return Vector3.zero end
@@ -3719,12 +3721,11 @@ do -- Masukin ke dalam Tab Main
         Name = "Camera FOV", 
         Min = 30, Max = 140, Default = 90,
         Callback = function(v)
-            VD.CAM_FOV =
-                v
+            VD.CAM_FOV = v
         end
     })
     camSection:AddToggle({ Default = false, Name = "Third Person (Killer only)", Callback = function(v) VD.CAM_ThirdPerson = v end })
-    camSection:AddToggle({ Default = false, Name = "Shift Lock (auto face camera)", camera)", Callback = function(v) VD.CAM_ShiftLock = v end })
+    camSection:AddToggle({ Default = false, Name = "Shift Lock (auto face camera)", Callback = function(v) VD.CAM_ShiftLock = v end })
     camSection:AddToggle({ Default = false, Name = "Infinity Zoom Out", Callback = function(v) 
         VD.CAM_InfinityZoom = v 
         LocalPlayer.CameraMaxZoomDistance = v and math.huge or 128 
@@ -3788,7 +3789,7 @@ do -- Masukin ke dalam Tab Survivors
     end })
     combatSurv:AddToggle({ Default = false, Name = "Auto Parry", Callback = function(v) VD_SetAutoParry(v) end })
     combatSurv:AddSlider({
-        Name = "Parry Distance Trigger", Trigger",
+        Name = "Parry Distance Trigger",
         Min = 2, Max = 25, Default = 8, Increment = 1,
         Callback = function(v)
             VD.SURV_ParryDistance = v
@@ -3823,8 +3824,7 @@ do -- Masukin ke dalam Tab Killer
         Name = "Attack Range",
         Min = 5, Max = 20, Default = 12,
         Callback = function(v)
-            VD.AUTO_AttackRange =
-                v
+            VD.AUTO_AttackRange = v
         end
     })
     combatKiller:AddToggle({ Default = false, Name = "Hitbox Expand", Callback = function(v) VD.HITBOX_Enabled = v end })
@@ -3832,8 +3832,7 @@ do -- Masukin ke dalam Tab Killer
         Name = "Hitbox Size",
         Min = 5, Max = 40, Default = 15,
         Callback = function(v)
-            VD.HITBOX_Size =
-                v
+            VD.HITBOX_Size = v
         end
     })
     combatKiller:AddToggle({ Default = false, Name = "Double Tap", Callback = function(v) VD.KILLER_DoubleTap = v end })
@@ -3928,7 +3927,7 @@ do -- Masukin ke dalam Tab Main
 end
 
 do -- Masukin ke dalam Tab Main
-    local genAuti = Tabs.Main:CreateSection({ Name = "Automation" })
+    local genAuto = Tabs.Main:CreateSection({ Name = "Automation" })
 
     genAuto:AddToggle({ Default = false, Name = "Auto Skillcheck", Callback = function(v) VD_SetAutoSkillcheck(v) end })
     genAuto:AddToggle({ Default = false, Name = "Hide Skillcheck UI", Callback = function(v) VD.HideSkillUI = v end })
@@ -3975,8 +3974,7 @@ do -- Masukin ke dalam Misc
     flingSection:AddSlider({
         Name = "Fling Strength", 
         Min = 1000, Max = 50000, Default = 10000,
-        Callback = function(
-            v)
+        Callback = function(v)
             VD.FLING_Strength = v
         end
     })
@@ -4553,8 +4551,8 @@ local function VD_UpdateSurvivorWarnings()
         return
     end
     local now = tick()
-    if VD._WarnKillerVorat and now < VD._WarnKillerVorat then return end
-    VD._WarnKillerVorat = now + 0.15
+    if VD._WarnKillerTick and now < VD._WarnKillerTick then return end
+    VD._WarnKillerTick = now + 0.15
     VD._WarnKillerActive = true
 
     local killers = {}
@@ -4659,11 +4657,11 @@ end
 
 local function VD_UpdateBypassGate()
     if not VD.BypassGate then
-        if Vorat(VD_GateOriginal) then VD_RestoreGateParts() end
+        if next(VD_GateOriginal) then VD_RestoreGateParts() end
         return
     end
-    if VD._VoratBypassGate and tick() < VD._VoratBypassGate then return end
-    VD._VoratBypassGate = tick() + 1
+    if VD._BypassGateTick and tick() < VD._BypassGateTick then return end
+    VD._BypassGateTick = tick() + 1
     for _, gate in ipairs(Workspace:GetDescendants()) do
         if gate:IsA("Model") and gate.Name == "Gate" then
             VD_SetPartState(gate:FindFirstChild("LeftGate"), { Transparency = 1, CanCollide = false })
@@ -5253,7 +5251,7 @@ local function UpdateRadar()
     end
 
     if VD.RADAR_ShowPallet then
-        for _, pallet in ipairs(_Cache.Pallets or {}) do
+        for _, pallet in ipairs(Vora_Cache.Pallets or {}) do
             if pallet.model and pallet.model.Parent and pallet.part then
                 local isBroken = false
                 local ok, db = pcall(function() return pallet.model:GetAttribute("Destroyed") or pallet.model:GetAttribute("Broken") or pallet.model:GetAttribute("IsBroken") end)
@@ -5313,7 +5311,6 @@ local function UpdateRadar()
 end
 
 -- TELEPORT HELPERS
-local originalCanCollide = {}
 
 local function Vora_TeleportToPosition(pos)
     if not pos then return false end
@@ -6547,7 +6544,7 @@ local function DrawingESP_render(esp, player, char, cam, screenSize, screenCente
 
     local visualTextActive = false
     pcall(function()
-        local fn = getgenv().NEX_VD_VisualESP_HasPlayerText
+        local fn = getgenv().Vora_VD_VisualESP_HasPlayerText
         visualTextActive = type(fn) == "function" and fn(player) == true
     end)
 
@@ -6831,7 +6828,7 @@ do -- Masukin ke dalam Tab Map
     end })
 
     tpMapSection:AddButton({ Name = "TP to Gen", Callback = function() pcall(function() Vora_TeleportToGenerator(1) end) end })
-    tpMapSection:AddButton({ Name = "TP to Gate", Callback = function() pcall(NEX_TeleportToGate) end })
+    tpMapSection:AddButton({ Name = "TP to Gate", Callback = function() pcall(Vora_TeleportToGate) end })
     tpMapSection:AddButton({ Name = "TP to Hook", Callback = function() pcall(Vora_TeleportToHook) end })
 end
 
@@ -6870,7 +6867,7 @@ do -- Masukin ke dalam Tab Map
             Callback = function(state) VD.RADAR_Circle = state end
         })
 
-        local radarFilterSection = Tabs.Map:CreateSection({ Name = "Features" })
+        local radarFilterSection = Tabs.Map:CreateSection({ Name = "Radar Filter" })
         
         radarFilterSection:AddToggle({ Default = false, Name = "Show Killer", Callback = function(state) VD.RADAR_ShowKiller = state end })
         radarFilterSection:AddToggle({ Default = false, Name = "Show Survivor", Callback = function(state) VD.RADAR_ShowSurvivor = state end })
@@ -6880,7 +6877,6 @@ do -- Masukin ke dalam Tab Map
         radarFilterSection:AddToggle({ Default = false, Name = "Show Gate", Callback = function(state) VD.RADAR_ShowGate = state end })
         radarFilterSection:AddToggle({ Default = false, Name = "ShowWindow", Callback = function(state) VD.RADAR_ShowWindow = state end })
         radarFilterSection:AddToggle({ Default = false, Name = "Show Zombie", Callback = function(state) VD.RADAR_ShowZombie = state end })
-    end
 end
 
 -- REMOVE PALLETWRONG (replaces patched No Pallet Stun)
@@ -7029,8 +7025,7 @@ local function RemoveFog()
                     if not FogCache[obj] then
                         FogCache[obj] = {
                             enabled = obj:IsA("PostEffect") and obj.Enabled or true,
-                            parent =
-                                obj.Parent
+                            parent = obj.Parent
                         }
                     end
                     if obj:IsA("PostEffect") then obj.Enabled = false else obj.Parent = nil end
@@ -7306,11 +7301,11 @@ if DrawingAvailable then
     RunService.RenderStepped:Connect(OnRenderStep)
 end
 RunService.RenderStepped:Connect(function()
-    pcall(VD_RunCrosshairLoop)
+    pcall(VD_UpdateCrosshair)
 end)
 
 -- HEARTBEAT UNIVERSAL: Berjalan di PC & Mobile
-RunService.Heartbeat:Connect(function()
+RunService.Heartbeat:Connect(function(deltaTime)
     if VD.Destroyed then return end
     local cam = workspace.CurrentCamera
     if not cam then return end
