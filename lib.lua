@@ -1,7 +1,7 @@
 --[[
     Vorahub | COMMUNITY
     Author  : Kirsia
-    Version : 1.0.4
+    Version : 1.0.5
     Created : Oktober 2026
     Discord : discord.gg/vorahub
 ]]
@@ -361,7 +361,7 @@ function VoraLib:CreateWindow(options)
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0, 10, 0, 5),
 		Size = UDim2.new(0, 25, 0, 25),
-		Image = "rbxassetid://114938270553005",
+		Image = "rbxassetid://119521146805131",
 		ImageColor3 = Theme.Accent,
 		ZIndex = 2
 	})
