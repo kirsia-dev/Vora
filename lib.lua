@@ -360,7 +360,7 @@ function VoraLib:CreateWindow(options)
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0, 10, 0, 5),
 		Size = UDim2.new(0, 25, 0, 25),
-		Image = "rbxassetid://112067161065104",
+		Image = "rbxassetid://119521146805131",
 		ImageColor3 = Theme.Accent,
 		ZIndex = 2
 	})
@@ -446,7 +446,7 @@ function VoraLib:CreateWindow(options)
 		BorderSizePixel = 0,
 		Position = UDim2.new(0.1, 0, 0.1, 0),
 		Size = UDim2.new(0, 50, 0, 50),
-		Image = "rbxassetid://88070839487162",
+		Image = "rbxassetid://119521146805131",
 		ImageColor3 = Theme.TextColor,
 		Visible = true,
 		Active = true,
