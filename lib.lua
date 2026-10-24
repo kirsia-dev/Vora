@@ -446,7 +446,7 @@ function VoraLib:CreateWindow(options)
 		BorderSizePixel = 0,
 		Position = UDim2.new(0.1, 0, 0.1, 0),
 		Size = UDim2.new(0, 50, 0, 50),
-		Image = "rbxassetid://127876061340518",
+		Image = "rbxassetid://88070839487162",
 		ImageColor3 = Theme.TextColor,
 		Visible = true,
 		Active = true,
