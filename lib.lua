@@ -1,8 +1,8 @@
 --[[
     Vorahub | COMMUNITY
-    Author  : Andra/Garz
-    Version : 1.0.3
-    Created : November 2025
+    Author  : Kirsia
+    Version : 1.0.4
+    Created : Oktober 2026
     Discord : discord.gg/vorahub
 ]]
 TweenService = game:GetService("TweenService")
@@ -446,23 +446,33 @@ function VoraLib:CreateWindow(options)
 		BorderSizePixel = 0,
 		Position = UDim2.new(0.1, 0, 0.1, 0),
 		Size = UDim2.new(0, 50, 0, 50),
-		Image = "rbxassetid://127876061340518", 
+		Image = "rbxassetid://127876061340518",
 		ImageColor3 = Theme.TextColor,
-		Visible = true, 
+		Visible = true,
 		Active = true,
 		Draggable = true,
 		ZIndex = 100
 	})
-	
+
 	Create("UICorner", {
 		CornerRadius = UDim.new(0, 10),
 		Parent = ToggleButton
 	})
-	
-	Create("UIStroke", {
-		Color = Theme.Outline,
-		Thickness = 1,
+
+	local ToggleStroke = Create("UIStroke", {
+		Color = Color3.fromRGB(255, 255, 255),
+		Thickness = 2,
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		Parent = ToggleButton
+	})
+
+	Create("UIGradient", {
+		Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(120, 190, 255))
+		}),
+		Rotation = 45,
+		Parent = ToggleStroke
 	})
 
 	local function ToggleUI()
